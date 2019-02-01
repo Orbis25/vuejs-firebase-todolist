@@ -11,7 +11,7 @@
     >
       <el-menu-item index="1">Home</el-menu-item>
       <el-menu-item index="2" class="homa">{{username}}</el-menu-item>
-      <el-menu-item index="2" class="out">
+            <el-menu-item index="3" class="out">
         <el-button type="danger" @click="singOut">SignOut</el-button>
       </el-menu-item>
     </el-menu>

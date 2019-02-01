@@ -2,7 +2,7 @@
   <div>
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :span="12">
-        <h1>Login with vue and firebase</h1>
+        <h1>Login</h1>
         <el-form
           :model="form"
           status-icon
@@ -55,12 +55,15 @@ export default {
           //loggueo al usuario
           firebase
             .auth()
-            .signInWithEmailAndPassword(this.form.email, this.form.pass)
-            .then(r => {
-              console.log("login!");
-              this.$router.push({ path: "/" });
-            })
-            .catch(e => console.log("error!"));
+            .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+              return firebase.auth().signInWithEmailAndPassword(this.form.email, this.form.pass)
+                .then(r => {
+                  console.log("login!");
+                  this.$router.push({ path: "/" });
+                })
+                .catch(e => console.log("error!"));
+            });
         } else {
           console.log("error submit!!");
           return false;

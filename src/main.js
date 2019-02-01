@@ -11,7 +11,12 @@ Vue.config.productionTip = false;
 
 // Initialize Firebase
 var config = {
-  //you configuration
+  apiKey: "AIzaSyDW4C7R_pLn32mqA_rotCLQEVvC-DYSaz0",
+  authDomain: "vuejsandfirebase.firebaseapp.com",
+  databaseURL: "https://vuejsandfirebase.firebaseio.com",
+  projectId: "vuejsandfirebase",
+  storageBucket: "vuejsandfirebase.appspot.com",
+  messagingSenderId: "171161469435"
 };
 firebase.initializeApp(config);
 //guard to route
@@ -30,10 +35,15 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-/* eslint-disable no-new */
-new Vue({
-  el: "#app",
-  router,
-  components: { App },
-  template: "<App/>"
-});
+//verifica el estado de del usuario y me permite mantener la sesion
+firebase.auth().onAuthStateChanged((user) =>{
+  /* eslint-disable no-new */
+  new Vue({
+    el: "#app",
+    router,
+    components: { App },
+    template: "<App/>"
+  });
+})
+
+
