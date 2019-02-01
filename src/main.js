@@ -11,7 +11,7 @@ Vue.config.productionTip = false;
 
 // Initialize Firebase
 var config = {
-  //you config
+ //config
 };
 firebase.initializeApp(config);
 //guard to route

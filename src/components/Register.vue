@@ -12,7 +12,7 @@
           class="demo-ruleForm"
         >
           <img src="@/assets/logo.png" alt>
-          <el-form-item label="Username" prop="email">
+          <el-form-item label="Email" prop="email">
             <el-input type="email" v-model="form.email" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="Password" prop="pass">
@@ -39,15 +39,18 @@ export default {
         pass: ""
       },
       rules: {
-        email: { required: true, message: "insert a email", trigger: "blur" },
+        email: [
+          { required: true, message: "insert a email", trigger: "blur" },
+          {
+            required: true,
+            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            message: "insert a email valid",
+            trigger: "blur"
+          }
+        ],
         pass: {
           required: true,
           message: "insert a password",
-          trigger: "blur"
-        },
-        name: {
-          required: true,
-          message: "insert a name",
           trigger: "blur"
         }
       }
@@ -67,6 +70,13 @@ export default {
                 type: "success"
               });
               this.$router.push({ path: "/login" });
+            })
+            .catch(e => {
+              this.$notify({
+                title: "error",
+                message: "checks you credentials!!",
+                type: "error"
+              });
             });
         } else {
           console.log("error submit!!");
