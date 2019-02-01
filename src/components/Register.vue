@@ -12,10 +12,7 @@
           class="demo-ruleForm"
         >
           <img src="@/assets/logo.png" alt>
-          <el-form-item label="Name" prop="name">
-            <el-input type="email" v-model="form.name" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Email" prop="email">
+          <el-form-item label="Username" prop="email">
             <el-input type="email" v-model="form.email" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="Password" prop="pass">
@@ -33,13 +30,13 @@
 </template>
 
 <script>
+import firebase from "firebase";
 export default {
   data() {
     return {
       form: {
         email: "",
-        pass: "",
-        name: ""
+        pass: ""
       },
       rules: {
         email: { required: true, message: "insert a email", trigger: "blur" },
@@ -60,7 +57,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          firebase
+            .auth()
+            .createUserWithEmailAndPassword(this.form.email, this.form.pass)
+            .then(r => {
+              this.$notify({
+                title: "Success",
+                message: "account created!",
+                type: "success"
+              });
+              this.$router.push({ path: "/login" });
+            });
         } else {
           console.log("error submit!!");
           return false;

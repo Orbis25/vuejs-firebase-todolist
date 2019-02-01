@@ -11,13 +11,13 @@
       <el-col v-for="(task,index) in tasks" :key="index" :span="6">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span contenteditable="true">{{task.title}}</span>
+            <span contenteditable="true" @blur="updateTitle($event,task.key)">{{task.title}}</span>
             <el-button style="float: right; padding: 3px 0" type="text" @click="remove(task.key)">
               <i class="el-icon-delete"></i>
             </el-button>
           </div>
           <p>
-            <span contenteditable="true">{{task.task}}</span>
+            <span contenteditable="true" @blur="updateTask($event,task.key)">{{task.task}}</span>
           </p>
         </el-card>
       </el-col>
@@ -57,7 +57,7 @@ export default {
       },
       formLabelWidth: "120px",
       tasks: [],
-      existTask:false,
+      existTask: false,
       loading: false
     };
   },
@@ -70,7 +70,6 @@ export default {
   methods: {
     add() {
       let db = firebase.database();
-      this.tasks = [];
       this.loading = true;
       db.ref("tasks/")
         .push({
@@ -85,20 +84,23 @@ export default {
             type: "success"
           });
           this.loading = false;
+          this.getAll();
         });
     },
     getAll() {
       let db = firebase.database();
       this.loading = true;
       this.tasks = [];
-      db.ref("tasks/").on("value", snapshot => {
+      db.ref("tasks/").once("value", snapshot => {
         let snap = snapshot.val();
         for (let key in snap) {
-          this.tasks.push({
-            title: snap[key].title,
-            task: snap[key].task,
-            key: key
-          });
+          if (snap[key].username == firebase.auth().currentUser.email) {
+            this.tasks.push({
+              title: snap[key].title,
+              task: snap[key].task,
+              key: key
+            });
+          }
         }
         this.loading = false;
       });
@@ -122,6 +124,7 @@ export default {
                 type: "success",
                 message: "Delete completed"
               });
+              this.getAll();
             })
             .catch(e => {
               this.$message({
@@ -136,6 +139,18 @@ export default {
             message: "Delete canceled"
           });
         });
+    },
+    updateTitle(title, key) {
+      let db = firebase.database();
+      db.ref("tasks/" + key).update({
+        title: title.target.innerHTML
+      });
+    },
+    updateTask(task, key) {
+      let db = firebase.database();
+      db.ref("tasks/" + key).update({
+        task: task.target.innerHTML
+      });
     }
   }
 };
